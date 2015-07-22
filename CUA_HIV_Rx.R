@@ -1,9 +1,12 @@
 #Cost-utility analysis of treating all HIV patients
+
+library(deSolve)
 parameters <- c(
   mui = 1/50 , #birth ?dP rate of population change?
   muoS = 1/50 , #death rate for normal people
   muoIa = 1/20 , #death rate for HIV stage I/II
   muoIb = 1/5 , #death rate for HIV stage III/IV
+  trans = 1/10, #transition from Ia to Ib
   R0 <- 5, #Sexual contact (2-5) #wikipedia. Treatment could increase by 2- http://cid.oxfordjournals.org/content/44/8/1115.full% , and this does not consider how effect of transmission could be modified by increased longevity (mind you, in so far as transmission rate is increases that MIGHT reduce longevity if life expectancy on therapy is still lower than if not infection)
   #Rx_cov <- .3, #ART treatment coverage  change this, it's currently for those who 'shoudl be on treatment', we want all HIV positive.
   Rx_cov <- 6.2/23.5, #treatment coverage #avert.org
@@ -39,7 +42,7 @@ HIV_Rx <- function(t, state, parms)
        {
          
          P <- S+Ia+Ib
-         lam <- R0
+         lam <- R0 *((Ia+Ib)/P)
          
          #rate of change
          dS <- mui*P-muoS*S-lam*S
@@ -48,7 +51,7 @@ HIV_Rx <- function(t, state, parms)
          dD <- muoS*S+muoIa*Ia+muoIb*Ib
          
          # return the rate of change
-         list(c(dS, dIa, dIb, dY))
+         list(c(dS, dIa, dIb, dD))
          
        }
   ) 
