@@ -8,11 +8,11 @@ parameters <- c(
   #Rx_cov <- .3, #ART treatment coverage  change this, it's currently for those who 'shoudl be on treatment', we want all HIV positive.
   Rx_cov <- 6.2/23.5, #treatment coverage #avert.org
   
-  <- life_expectancy #average SURVIVAL TIME for HIV positive without treametn is 9-11 years (wikipedia)
+  LE		<- 10 #life_expectancy #average SURVIVAL TIME for HIV positive without treametn is 9-11 years (wikipedia)
   
 )
 
-time <- 0:50 , #years
+time <- 0:50  #years
 
 cost_par <- c(Rx_costyr= 140, #in USD per person per year
               AIDS_cost =    745.27, #cost of treatment of AIDS per patient year in 2015 US$. From page 177 of Confronting AIDS: Public Priorities in a Global Epidemic
