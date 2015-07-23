@@ -13,7 +13,7 @@ parameters <- c(
   trans = 1/10*resistance, 		#transition from Ia to Ib
   R0 <- 5, #Sexual contact (2-5) 	#wikipedia. Treatment could increase by 2- http://cid.oxfordjournals.org/content/44/8/1115.full% , and this does not consider how effect of transmission could be modified by increased longevity (mind you, in so far as transmission rate is increases that MIGHT reduce longevity if life expectancy on therapy is still lower than if not infection)
   #Rx_cov <- .3, 			#ART treatment coverage  change this, it's currently for those who 'shoudl be on treatment', we want all HIV positive.
-  Rx_cov <- 6.2/23.5, 			#treatment coverage #avert.org
+  Rx_cov <- .5, 			#treatment coverage #avert.org 6.2/23.5
   
   LE <- 10 				#life_expectancy #average SURVIVAL TIME for HIV positive without treametn is 9-11 years (wikipedia)
   
@@ -43,7 +43,7 @@ init_not_S <- 0.15*initP	#From ???http://populationpyramid.net/sub-saharan-afric
 initS <- initP-initI-init_not_S
 
 
-state <- c(S = initS, Ia=initIa, Ib = initIb, Y = 0, D = 0)
+state <- c(S = initS, Ia=initIa, Ib = initIb, Y = 0, D = 0, D0 = 0)
 #Cost_Ia = initIa*140, Cost_Ib = initIb*745.27,
 
 #######################################################################
@@ -57,17 +57,20 @@ HIV_Rx <- function(t, state, parms)
          lam <- R0/50 *((Ia+Ib)/P) #Force of infection
          
          
+         
+         
          #rate of change
          #dCost_Ia <- Ia*costIa
          #dCost_Ib <- Ib*costIb
          dS <- mui*P-muoS*S-lam*S
          dIa <- -muoIa*Ia+lam*S-resistance*Ia
-         dIb <- -muoIb*Ib+resistance*Ia
+         dIb <- (-muoIb*Ib)-(resistance/200*Ib)+(Ia*resistance)
          dY <- 1
          dD <- muoIa*Ia+muoIb*Ib #To calculate Years life lost from infection
+         dD0 <- muoIa*Ia*(1-Rx_cov)+muoIb*Ib*(1-Rx_cov) #Deaths without Rx
          
          # return the rate of change
-         list(c(dS, dIa, dIb, dY, dD))
+         list(c(dS, dIa, dIb, dY, dD, dD0))
          
          
          
@@ -82,14 +85,22 @@ HIV_Rx <- function(t, state, parms)
 ############################
 out.base <- ode(y = state, times = time, func = HIV_Rx, parms = parameters)
 
-
 total_Ia_base <- sum(out.base[,3]) #sum of no. of Ia cases treated each year
 total_Ib_base <- sum(out.base[,4]) #sum of no. of Ib cases treated each year
 
-total_ARTcost_base <- total_Ia_base*costIa+total_Ib_base*costIb #need to incoperate current coverage
+total_ARTcost_base <- total_Ia_base*costIa*Rx_cov+total_Ib_base*costIb*Rx_cov #need to incoperate current coverage
+
+#Disability weights, Salomon et al
+#HIV: symptomatic, pre AIDS= 0.221
+#HIV/AIDS: receiving ART = 0.053
+#AIDS: not receiving ART = 0.547
 
 DW_Ia <-.221
 DW_Ib <- .547
 DW_ART <- .053
 
-YL_Dis <- total_Ia_base*Rx_cov*DW_ART+total_Ia_base*(1-Rx_cov)*DW_Ia + total_Ib_base*Rx_cov*DW_ART+total_Ib_base*(1-Rx_cov)*DW_Ib
+YL_Dis_base <- total_Ia_base*Rx_cov*DW_ART+total_Ia_base*(1-Rx_cov)*DW_Ia + total_Ib_base*Rx_cov*DW_ART+total_Ib_base*(1-Rx_cov)*DW_Ib
+
+LYlost <- 20 #average life lost without ART Rx
+LYlost_base <- LYlost*out.base[51,7]
+DALY_base <- LYlost_base+YL_Dis_base
