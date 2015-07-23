@@ -50,7 +50,7 @@ HIV_Rx <- function(t, state, parms)
        {
          
          P <- S+Ia+Ib
-         lam <- R0 *((Ia+Ib)/P) #Force of infection
+         lam <- R0/50 *((Ia+Ib)/P) #Force of infection
          
          #rate of change
          dS <- mui*P-muoS*S-lam*S
