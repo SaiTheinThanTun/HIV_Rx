@@ -40,7 +40,8 @@ init_not_S <- 0.15*initP	#From ???http://populationpyramid.net/sub-saharan-afric
 initS <- initP-initI-init_not_S
 
 
-state <- c(S = initS, Ia=initIa, Ib = initIb)
+state <- c(S = initS, Ia=initIa, Ib = initIb, Y = 0, Cost_Ia = initIa*140, Cost_Ib = initIb*745.27, D = 0)
+
 
 #######################################################################
 
@@ -52,14 +53,27 @@ HIV_Rx <- function(t, state, parms)
          P <- S+Ia+Ib
          lam <- R0/50 *((Ia+Ib)/P) #Force of infection
          
+         #costs again
+         costIa = 140 		#Rx cost for HIV stage I/II
+         costIb = 745.27 			#Rx cost for HIV stage III/IV
+         
+         
+         
+         
          #rate of change
          dS <- mui*P-muoS*S-lam*S
          dIa <- -muoIa*Ia+lam*S-trans*Ia
          dIb <- -muoIb*Ib+trans*Ia
-         
+         dY <- 1
+         dCost_Ia <- Ia*costIa
+         dCost_Ib <- Ib*costIb
+         dD <- muoIa*Ia+muoIb*Ib #To calculate Years life lost from infection
          
          # return the rate of change
-         list(c(dS, dIa, dIb))
+         list(c(dS, dIa, dIb, dY, dCost_Ia, dCost_Ib, dD))
+         
+         
+         
          
        }
   ) 
@@ -69,7 +83,7 @@ HIV_Rx <- function(t, state, parms)
 ############################
 #Basecase output
 ############################
-out <- ode(y = state, times = time, func = HIV_Rx, parms = parameters)
+out.base <- ode(y = state, times = time, func = HIV_Rx, parms = parameters)
 
 
 
