@@ -153,3 +153,11 @@ Net_cost <- total_ARTcost_db - total_ARTcost_base
 Net_DALY <- (DALY_db-DALY_base)
 
 ICER <- Net_cost/Net_DALY
+
+
+plot(out.base[,10]+out.base[,11], type="l", col="blue")
+points(out.db[,10]+out.db[,11], type="l", col="red")
+
+plot(out.base[,8]+out.base[,9], type="l", col="blue")
+points(out.db[,8]+out.db[,9], type="l", col="red")
+
