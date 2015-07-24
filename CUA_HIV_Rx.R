@@ -115,6 +115,10 @@ HIV_Rx <- function(t, state, parms)
 
 #Run either the first 2 follow lines or the latter 2, depending on whether you’re doing the bae case of the donald)bump scenario. 
 
+DW_Ia <-.221
+DW_Ib <- .547
+DW_ART <- .053
+
 #Base_case
 donald_bump <- length(time)+1
 out.base <- ode(y = state, times = time, func = HIV_Rx, parms = parameters)
@@ -138,9 +142,7 @@ total_ARTcost_db <- out.db[length(time),10]+out.db[length(time),11]
 #HIV/AIDS: receiving ART = 0.053
 #AIDS: not receiving ART = 0.547
 
-DW_Ia <-.221
-DW_Ib <- .547
-DW_ART <- .053
+
 
 YL_Dis_base <- out.base[length(time),8]+out.base[length(time),9]
 
