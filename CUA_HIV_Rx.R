@@ -191,3 +191,41 @@ mtext("Cell Density",side=4,col="red",line=4) axis(4, ylim=c(0,7000), col="red",
 mtext("Time (Hours)",side=1,col="black",line=2.5) 
 ## Add Legend legend("topleft",legend=c("Beta Gal","Cell Density"), text.col=c("black","red"),pch=c(16,15),col=c("black","red"))
 
+plot(out.base[,3])
+lines(out.db[,3])
+
+
+#plotting for Ia and Ib for base
+par(mar=c(5, 4, 4, 6) + 0.1) 
+plot(out.base[,1],out.base[,3]/10^6, type="l", col="blue", axes=FALSE, xlab="", ylab="", main="Scenario 1")
+axis(2, ylim=c(0,17),col="blue") 
+mtext("HIV patients stage I & II (in millions)",side=2,line=2.5) 
+box()
+par(new=TRUE)
+plot(out.base[,1],out.base[,4]/10^6, type="l", col="red", axes=FALSE, xlab="", ylab="")
+axis(4, ylim=c(0,17),col="red") 
+mtext("HIV patients stage III & IV (in millions)",side=4,line=2.5)
+
+axis(1,pretty(range(out.base[,1]),10))
+mtext("Time (Years)",side=1,col="black",line=2.5)
+
+legend("top",legend=c("Stage I & II","Stage III & IV"),
+       text.col=c("blue","red"),pch= "__", col=c("blue","red"))
+
+
+#plotting for Ia and Ib for db
+par(mar=c(5, 4, 4, 6) + 0.1) 
+plot(out.db[,1],out.db[,3]/10^6, type="l", col="blue", axes=FALSE, xlab="", ylab="", main="Scenario 2")
+axis(2, ylim=c(0,17),col="blue") 
+mtext("HIV patients stage I & II (in millions)",side=2,line=2.5) 
+box()
+par(new=TRUE)
+plot(out.db[,1],out.db[,4]/10^6, type="l", col="red", axes=FALSE, xlab="", ylab="")
+axis(4, ylim=c(0,17),col="red") 
+mtext("HIV patients stage III & IV (in millions)",side=4,line=2.5)
+
+axis(1,pretty(range(out.db[,1]),10))
+mtext("Time (Years)",side=1,col="black",line=2.5)
+
+legend("top",legend=c("Stage I & II","Stage III & IV"),
+       text.col=c("blue","red"),pch= "__", col=c("blue","red"))
